@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mike James — Web & Android Developer</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (CORRECT CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome 6 (Free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#C9A227',
+            'gold-light': '#F0C94B',
+            'gold-dim': 'rgba(201,162,39,0.15)',
+            navy: '#0A0F1E',
+            navy2: '#0D1528',
+            navy3: '#111B35',
+            cream: '#F5F0E8',
+            grey: '#8A8FA8',
+          },
+          fontFamily: {
+            display: ['Cormorant Garamond', 'serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* ---------- base ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: #0A0F1E;
+      color: #F5F0E8;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* hide custom cursor on touch devices */
+    @media (hover: none) and (pointer: coarse) {
+      body {
+        cursor: auto;
+      }
+      .cursor-dot,
+      .cursor-ring {
+        display: none !important;
+      }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0F1E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C9A227;
+      border-radius: 2px;
+    }
+
+    /* custom cursor */
+    .cursor-dot {
+      width: 10px;
+      height: 10px;
+      background: #C9A227;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #C9A227;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0.5;
+    }
+
+    /* reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* hero fade-up */
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-up-1 {
+      animation: fadeUp 0.8s ease 0.2s forwards;
+      opacity: 0;
+    }
+    .fade-up-2 {
+      animation: fadeUp 0.8s ease 0.4s forwards;
+      opacity: 0;
+    }
+    .fade-up-3 {
+      animation: fadeUp 0.8s ease 0.6s forwards;
+      opacity: 0;
+    }
+    .fade-up-4 {
+      animation: fadeUp 0.8s ease 0.8s forwards;
+      opacity: 0;
+    }
+
+    /* floating orbs */
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-30px);
+      }
+    }
+    .orb-1 {
+      animation: float 8s ease-in-out infinite;
+    }
+    .orb-2 {
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    /* nav blur */
+    .nav-blur {
+      background: linear-gradient(to bottom, rgba(10, 15, 30, 0.95), transparent);
+      backdrop-filter: blur(8px);
+    }
+
+    /* stat animation delay */
+    .stat-1 {
+      animation-delay: 1s;
+    }
+    .stat-2 {
+      animation-delay: 1.1s;
+    }
+    .stat-3 {
+      animation-delay: 1.2s;
+    }
+    .stat-4 {
+      animation-delay: 1.3s;
+    }
+
+    /* skill card */
+    .skill-card {
+      transition: all 0.3s ease;
+      border: 1px solid rgba(201, 162, 39, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #C9A227;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .skill-card:hover::before {
+      transform: scaleX(1);
+    }
+    .skill-card:hover {
+      background: #111B35;
+    }
+
+    /* project image */
+    .project-img {
+      transition: transform 0.5s ease, filter 0.5s ease;
+      filter: grayscale(30%) brightness(0.8);
+    }
+    .project-card:hover .project-img {
+      transform: scale(1.05);
+      filter: grayscale(0%) brightness(1);
+    }
+
+    /* process step */
+    .step-num {
+      width: 64px;
+      height: 64px;
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #C9A227;
+      background: #0D1528;
+      transition: all 0.3s;
+    }
+    .process-step:hover .step-num {
+      background: #C9A227;
+      color: #0A0F1E;
+    }
+
+    /* contact icon */
+    .contact-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(201, 162, 39, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.3s;
+      color: #8A8FA8;
+    }
+    .contact-item:hover .contact-icon-wrap {
+      background: #C9A227;
+      color: #0A0F1E;
+    }
+
+    /* social link */
+    .social-link {
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8A8FA8;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .social-link:hover {
+      border-color: #C9A227;
+      color: #C9A227;
+      background: rgba(201, 162, 39, 0.15);
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #C9A227;
+      text-decoration: none;
+      transition: gap 0.3s;
+    }
+    .project-link:hover {
+      gap: 14px;
+    }
+
+    .form-input,
+    .form-textarea {
+      background: #111B35;
+      border: 1px solid rgba(201, 162, 39, 0.15);
+      padding: 16px;
+      color: #F5F0E8;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+      width: 100%;
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: #C9A227;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(138, 143, 168, 0.5);
+    }
+    .form-success {
+      font-size: 13px;
+      text-align: center;
+      color: #C9A227;
+      display: none;
+      margin-top: 8px;
+    }
+
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      z-index: 0;
+    }
+    .about-img-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: -24px;
+      right: -24px;
+      width: 60%;
+      height: 60%;
+      background: rgba(201, 162, 39, 0.15);
+      z-index: 0;
+    }
+    .about-img-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: #111B35;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(201, 162, 39, 0.1);
+      overflow: hidden;
+    }
+    .about-img-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .project-img-placeholder-icon {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: #0D1528;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: #C9A227;
+    }
+
+    .project-coming {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      background: #0D1528;
+    }
+
+    /* ---------- mobile nav ---------- */
+    .nav-links {
+      display: flex;
+      gap: 2.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8A8FA8;
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      color: #C9A227;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #F5F0E8;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* mobile overlay */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 30, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mobile-overlay .nav-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      font-size: 1.2rem;
+    }
+    .mobile-overlay .nav-links a {
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+    }
+    .mobile-overlay .close-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: #F5F0E8;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-menu-toggle {
+        display: block;
+      }
+      .about-img-wrap::after {
+        display: none;
+      }
+      /* hide big background text on mobile to avoid overflow */
+      .hero-bg-text {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-container {
+        gap: 1.5rem;
+      }
+      .stat .font-display {
+        font-size: 2.5rem;
+      }
+      .step-num {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+      }
+      .contact-item {
+        padding: 1rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== CURSOR ===== -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex justify-between items-center">
+    <a href="#" class="font-display text-2xl font-bold text-gold tracking-wider no-underline">MJ</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="mobile-menu-toggle" id="menuToggle" aria-label="Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav>
+
+  <!-- mobile overlay menu -->
+  <div class="mobile-overlay" id="mobileOverlay">
+    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="min-h-screen flex items-center px-6 md:px-12 pt-28 pb-16 relative overflow-hidden" id="home">
+    <!-- bg text -->
+    <div class="hero-bg-text absolute right-[-40px] top-1/2 -translate-y-1/2 font-display text-[clamp(60px,18vw,240px)] font-bold text-transparent pointer-events-none select-none whitespace-nowrap" style="-webkit-text-stroke:1px rgba(201,162,39,0.08);">
+      MIKE
+    </div>
+
+    <!-- orbs -->
+    <div class="orb-1 absolute w-[400px] h-[400px] top-[-100px] right-[100px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(201,162,39,0.12),transparent 70%);"></div>
+    <div class="orb-2 absolute w-[300px] h-[300px] bottom-0 left-[-100px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(201,162,39,0.07),transparent 70%);"></div>
+
+    <!-- content -->
+    <div class="relative z-10 max-w-3xl">
+      <div class="fade-up-1 flex items-center gap-3 text-[11px] tracking-[3px] uppercase text-gold mb-7">
+        <span class="w-8 h-px bg-gold"></span>
+        Available for projects
+      </div>
+      <h1 class="fade-up-2 font-display text-[clamp(48px,8vw,96px)] font-bold leading-[0.95] mb-6">
+        Mike<br />
+        <span class="text-gold italic">James.</span>
+      </h1>
+      <p class="fade-up-3 text-base leading-relaxed text-grey max-w-lg mb-12">
+        <strong class="text-cream font-normal">Web &amp; Android Developer</strong>
+        helping African businesses grow online with fast, beautiful websites and powerful mobile apps.
+        Based in Nigeria, building for the world.
+      </p>
+      <div class="fade-up-4 flex flex-wrap gap-4">
+        <a href="https://wa.me/2348165913697" target="_blank" class="inline-block px-9 py-4 bg-gold text-navy font-body text-xs font-medium tracking-[2px] uppercase no-underline transition-opacity hover:opacity-90">
+          <i class="fab fa-whatsapp mr-2"></i>WhatsApp Me
+        </a>
+        <a href="#projects" class="inline-block px-9 py-4 border border-gold/40 text-gold font-body text-xs font-medium tracking-[2px] uppercase no-underline transition-all hover:border-gold hover:bg-gold-dim">
+          View My Work
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <div class="bg-navy3 border-y border-gold/10 px-6 md:px-12 py-8 flex justify-center gap-10 md:gap-20 flex-wrap stats-container">
+    <div class="stat text-center opacity-0 stat-1">
+      <div class="font-display text-4xl md:text-5xl font-bold text-gold leading-none">20+</div>
+      <div class="text-[11px] tracking-[2px] uppercase text-grey mt-1">Projects Done</div>
+    </div>
+    <div class="stat text-center opacity-0 stat-2">
+      <div class="font-display text-4xl md:text-5xl font-bold text-gold leading-none">3+</div>
+      <div class="text-[11px] tracking-[2px] uppercase text-grey mt-1">Years Experience</div>
+    </div>
+    <div class="stat text-center opacity-0 stat-3">
+      <div class="font-display text-4xl md:text-5xl font-bold text-gold leading-none">2</div>
+      <div class="text-[11px] tracking-[2px] uppercase text-grey mt-1">Core Services</div>
+    </div>
+    <div class="stat text-center opacity-0 stat-4">
+      <div class="font-display text-4xl md:text-5xl font-bold text-gold leading-none"><i class="fas fa-globe-africa"></i></div>
+      <div class="text-[11px] tracking-[2px] uppercase text-grey mt-1">Africa Focused</div>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="px-6 md:px-12 py-24 md:py-28 relative">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+      <div class="about-img-wrap reveal">
+        <div class="about-img-placeholder">
+          <img src="https://i.postimg.cc/BQNbz4Hp/20250903-024924.jpg" alt="Mike James" />
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="flex items-center gap-3 text-[11px] tracking-[3px] uppercase text-gold mb-5">
+          <span class="w-6 h-px bg-gold"></span>
+          About Me
+        </div>
+        <h2 class="font-display text-[clamp(32px,4.5vw,52px)] font-bold leading-[1.1] mb-4">
+          Building the <em class="text-gold not-italic">Digital Future</em> of Africa
+        </h2>
+        <p class="text-sm md:text-base text-grey leading-relaxed mb-5">
+          I'm Mike James, a passionate Web and Android Developer based in Nigeria.
+          I build fast, modern websites and mobile apps that help African businesses
+          attract customers and compete in the digital world.
+        </p>
+        <p class="text-sm md:text-base text-grey leading-relaxed mb-5">
+          With <strong class="text-cream font-normal">3+ years of hands-on experience</strong>,
+          I've worked on projects across entertainment, fashion, e-commerce and more.
+          Every project I build is crafted with purpose — clean code, beautiful design, real results.
+        </p>
+        <blockquote class="border-l-2 border-gold pl-6 my-8 font-display text-xl italic text-cream leading-relaxed">
+          "I don't just write code. I build tools that grow businesses."
+        </blockquote>
+        <a href="https://wa.me/2348165913697" target="_blank" class="inline-block px-9 py-4 bg-gold text-navy font-body text-xs font-medium tracking-[2px] uppercase no-underline transition-opacity hover:opacity-90">
+          <i class="fab fa-whatsapp mr-2"></i>Let's Work Together
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills" class="bg-navy2 px-6 md:px-12 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="text-[11px] tracking-[3px] uppercase text-gold mb-5">What I Do</div>
+        <h2 class="font-display text-[clamp(32px,4.5vw,52px)] font-bold leading-[1.1] mb-4">
+          My <em class="text-gold not-italic">Core Skills</em>
+        </h2>
+        <p class="text-sm md:text-base text-grey max-w-lg mx-auto leading-relaxed">
+          Everything I build is fast, mobile-friendly and designed to get results for your business.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-globe"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">Web Development</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">Fast, responsive websites that look stunning on every screen and rank well on Google.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">HTML/CSS/JS</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">React</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Next.js</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Node.js</span>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-mobile-alt"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">Android Apps</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">Native Android applications built with Java. From simple tools to complex business apps.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Java</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Android SDK</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Firebase</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">REST APIs</span>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-shopping-cart"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">E-Commerce</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">Online stores with product listings, cart, checkout and payment integration for African markets.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Paystack</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Flutterwave</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">WooCommerce</span>
+          </div>
+        </div>
+        <!-- 4 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-search"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">SEO &amp; Performance</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">I build websites that load fast and rank on Google so customers can actually find your business.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">SEO</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Speed Optimization</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Google Analytics</span>
+          </div>
+        </div>
+        <!-- 5 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-database"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">Backend &amp; Database</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">Solid backend systems that power your app or website securely and reliably.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">PostgreSQL</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">MongoDB</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Firebase</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Python</span>
+          </div>
+        </div>
+        <!-- 6 -->
+        <div class="skill-card reveal p-8 bg-navy rounded">
+          <div class="text-3xl mb-4 text-gold"><i class="fas fa-pencil-ruler"></i></div>
+          <div class="font-display text-xl font-semibold text-cream mb-2">UI/UX Design</div>
+          <div class="text-sm text-grey leading-relaxed mb-5">Clean, intuitive interfaces designed to keep users engaged and convert visitors to customers.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Figma</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Tailwind CSS</span>
+            <span class="text-[10px] tracking-[1.5px] uppercase text-gold border border-gold/25 px-2.5 py-1">Responsive Design</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="px-6 md:px-12 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="text-[11px] tracking-[3px] uppercase text-gold mb-5">Portfolio</div>
+        <h2 class="font-display text-[clamp(32px,4.5vw,52px)] font-bold leading-[1.1] mb-4">
+          Selected <em class="text-gold not-italic">Work</em>
+        </h2>
+        <p class="text-sm md:text-base text-grey max-w-lg mx-auto leading-relaxed">
+          A showcase of projects that demonstrate my approach to design and development.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Big Zona -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.ibb.co/mVvgtH8p/big-zona.png" alt="Big Zona" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Music Portfolio</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">Big Zona</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Artist portfolio with music releases, bio and social links. Built with Next.js and Spotify API.</div>
+            <a href="https://big-zona.vercel.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- RK Records -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.ibb.co/FLvqyFmL/rk-records.png" alt="RK Records" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Entertainment Website</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">RK Records</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Record label platform showcasing artists, releases and booking system with smooth animations.</div>
+            <a href="https://rk-records.vercel.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- B&D Boutique -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.ibb.co/mFyYJz5q/boutique.png" alt="B&D Boutique" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">E-Commerce Website</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">B &amp; D Boutique</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Online fashion store with product catalog, responsive shopping and mobile optimization.</div>
+            <a href="https://b-and-d-boutique.vercel.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- All Fits Luxury -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.ibb.co/Hf9m4F3P/all-fit-luxury.png" alt="All Fits Luxury" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Brand Website</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">All Fits Luxury</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Fitness brand site featuring services, products and engaging animations focused on user experience.</div>
+            <a href="https://all-fit-luxury.vercel.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- CAGS -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.postimg.cc/3wjb7S1h/69ad53d259242626c70e4df6.jpg" alt="CAGS" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Education Website</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">CAGS</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Modern website for a Nigerian school showcasing its academic programs (Primary, JSS, SSS), holistic mission, and commitment to student excellence.</div>
+            <a href="https://christacadeschools.netlify.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- Nulge Restaurant -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <img src="https://i.postimg.cc/52X6ZDxf/69ad55310a9cf841de3d63ec.jpg" alt="Nulge Restaurant" class="project-img w-full aspect-[16/10] object-cover block" onerror="this.style.display='none'" />
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Restaurant Website</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">Nulge Restaurant</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">A clean, appetizing site for a Nigerian restaurant featuring a menu of popular dishes (Jollof Rice, Pounded Yam) and direct WhatsApp ordering integration.</div>
+            <a href="https://nulgerestaurant.netlify.app/" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- Guardian Lock (Android) -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded">
+          <div class="project-img-placeholder-icon">
+            <i class="fas fa-shield-alt text-6xl text-gold"></i>
+          </div>
+          <div class="p-6">
+            <div class="text-[10px] tracking-[2px] uppercase text-gold mb-2">Android Application</div>
+            <div class="font-display text-xl font-semibold text-cream mb-2">Guardian Lock</div>
+            <div class="text-sm text-grey leading-relaxed mb-4">Android security app with VPN-based DNS filtering, device admin and accountability features.</div>
+            <a href="#" class="project-link">View Project <i class="fas fa-arrow-right text-xs"></i></a>
+          </div>
+        </div>
+        <!-- Coming soon -->
+        <div class="project-card bg-navy3 overflow-hidden reveal rounded project-coming">
+          <div class="text-center p-10">
+            <div class="text-5xl text-gold mb-4"><i class="fas fa-plus-circle"></i></div>
+            <div class="font-display text-lg text-gold mb-2">More Coming Soon</div>
+            <div class="text-sm text-grey">Currently working on new projects</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROCESS ===== -->
+  <section class="bg-navy2 px-6 md:px-12 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="text-[11px] tracking-[3px] uppercase text-gold mb-5">How I Work</div>
+        <h2 class="font-display text-[clamp(32px,4.5vw,52px)] font-bold leading-[1.1]">
+          My <em class="text-gold not-italic">Process</em>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="process-step p-6 md:p-8 text-center reveal">
+          <div class="step-num">01</div>
+          <div class="font-display text-lg font-semibold text-cream mb-2">Discovery</div>
+          <div class="text-sm text-grey leading-relaxed">We talk about your business, goals and what you need. I listen carefully before writing a single line of code.</div>
+        </div>
+        <div class="process-step p-6 md:p-8 text-center reveal">
+          <div class="step-num">02</div>
+          <div class="font-display text-lg font-semibold text-cream mb-2">Design</div>
+          <div class="text-sm text-grey leading-relaxed">I plan the layout, user flow and visual style. You see exactly what will be built before I start.</div>
+        </div>
+        <div class="process-step p-6 md:p-8 text-center reveal">
+          <div class="step-num">03</div>
+          <div class="font-display text-lg font-semibold text-cream mb-2">Build</div>
+          <div class="text-sm text-grey leading-relaxed">Clean, fast code. I build your site or app to be mobile-friendly, SEO-ready and easy to maintain.</div>
+        </div>
+        <div class="process-step p-6 md:p-8 text-center reveal">
+          <div class="step-num">04</div>
+          <div class="font-display text-lg font-semibold text-cream mb-2">Deliver</div>
+          <div class="text-sm text-grey leading-relaxed">You get the full project with support. I don't disappear after delivery — I'm here if you need changes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="px-6 md:px-12 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-start">
+      <!-- left -->
+      <div class="reveal">
+        <div class="flex items-center gap-3 text-[11px] tracking-[3px] uppercase text-gold mb-5">
+          <span class="w-6 h-px bg-gold"></span>
+          Get In Touch
+        </div>
+        <h2 class="font-display text-[clamp(32px,4.5vw,52px)] font-bold leading-[1.1] mb-4">
+          Let's Build <em class="text-gold not-italic">Something</em>
+        </h2>
+        <p class="text-sm md:text-base text-grey leading-relaxed mb-10">
+          Have a project in mind? Need a website or Android app for your business?
+          I'd love to hear from you.
+        </p>
+
+        <div class="space-y-0">
+          <!-- WhatsApp -->
+          <div class="contact-item flex items-center gap-5 py-6 border-b border-gold/10">
+            <div class="contact-icon-wrap">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+              <div class="text-[10px] tracking-[2px] uppercase text-grey mb-1">WhatsApp</div>
+              <div class="text-sm md:text-base text-cream"><a href="https://wa.me/2348165913697" target="_blank" class="hover:text-gold transition-colors no-underline">+234 8165913697</a></div>
+            </div>
+          </div>
+          <!-- Email -->
+          <div class="contact-item flex items-center gap-5 py-6 border-b border-gold/10">
+            <div class="contact-icon-wrap">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <div class="text-[10px] tracking-[2px] uppercase text-grey mb-1">Email</div>
+              <div class="text-sm md:text-base text-cream"><a href="mailto:boostlyte@gmail.com" class="hover:text-gold transition-colors no-underline">boostlyte@gmail.com</a></div>
+            </div>
+          </div>
+          <!-- Location -->
+          <div class="contact-item flex items-center gap-5 py-6 border-b border-gold/10">
+            <div class="contact-icon-wrap">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <div class="text-[10px] tracking-[2px] uppercase text-grey mb-1">Location</div>
+              <div class="text-sm md:text-base text-cream">Nigeria, West Africa</div>
+            </div>
+          </div>
+          <!-- Availability -->
+          <div class="contact-item flex items-center gap-5 py-6 border-b border-gold/10">
+            <div class="contact-icon-wrap">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <div class="text-[10px] tracking-[2px] uppercase text-grey mb-1">Availability</div>
+              <div class="text-sm md:text-base text-cream">Open for new projects</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: form -->
+      <div class="reveal">
+        <form class="flex flex-col gap-5" onsubmit="handleSubmit(event)">
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] tracking-[2px] uppercase text-grey">Your Name</label>
+            <input type="text" placeholder="John Doe" required class="form-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] tracking-[2px] uppercase text-grey">Email or WhatsApp</label>
+            <input type="text" placeholder="email or +234..." required class="form-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] tracking-[2px] uppercase text-grey">What do you need?</label>
+            <select class="form-input">
+              <option value="">Select a service</option>
+              <option>Website Development</option>
+              <option>Android App Development</option>
+              <option>E-Commerce Store</option>
+              <option>SEO Optimization</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] tracking-[2px] uppercase text-grey">Tell me about your project</label>
+            <textarea placeholder="Describe what you want to build..." required class="form-textarea"></textarea>
+          </div>
+          <button type="submit" class="w-full px-9 py-4 bg-gold text-navy font-body text-xs font-medium tracking-[2px] uppercase transition-opacity hover:opacity-90">
+            <i class="fas fa-paper-plane mr-2"></i>Send Message
+          </button>
+          <div id="formMsg" class="form-success"><i class="fas fa-check-circle mr-2"></i>Message sent! I'll reply on WhatsApp shortly.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-navy2 border-t border-gold/10 px-6 md:px-12 py-10 flex flex-col md:flex-row justify-between items-center gap-5">
+    <div class="font-display text-xl font-bold text-gold tracking-wider">MJ</div>
+    <div class="text-xs text-grey tracking-[1px]">&copy; 2025 Mike James. All rights reserved.</div>
+    <div class="flex gap-5">
+      <a href="https://wa.me/2348165913697" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+      <a href="mailto:boostlyte@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="social-link"><i class="fas fa-times"></i></a>
+    </div>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ===== CUSTOM CURSOR (only if hover is supported) =====
+    if (window.matchMedia('(hover: hover)').matches) {
+      const dot = document.getElementById('cursorDot');
+      const ring = document.getElementById('cursorRing');
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+
+      document.addEventListener('mousemove', function(e) {
+        mx = e.clientX;
+        my = e.clientY;
+        dot.style.left = mx + 'px';
+        dot.style.top = my + 'px';
+      });
+
+      function animateRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + 'px';
+        ring.style.top = ry + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      // hover effect on interactive elements
+      document.querySelectorAll('a, button, .skill-card, .project-card').forEach(function(el) {
+        el.addEventListener('mouseenter', function() {
+          dot.style.transform = 'translate(-50%,-50%) scale(2)';
+          ring.style.width = '60px';
+          ring.style.height = '60px';
+          ring.style.opacity = '0.8';
+        });
+        el.addEventListener('mouseleave', function() {
+          dot.style.transform = 'translate(-50%,-50%) scale(1)';
+          ring.style.width = '36px';
+          ring.style.height = '36px';
+          ring.style.opacity = '0.5';
+        });
+      });
+    } else {
+      // hide cursors on touch devices
+      document.getElementById('cursorDot').style.display = 'none';
+      document.getElementById('cursorRing').style.display = 'none';
+    }
+
+    // ===== SCROLL REVEAL =====
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          setTimeout(function() {
+            entry.target.classList.add('visible');
+          }, 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(function(el) {
+      observer.observe(el);
+    });
+
+    // ===== CONTACT FORM =====
+    function handleSubmit(e) {
+      e.preventDefault();
+      var msg = document.getElementById('formMsg');
+      msg.style.display = 'block';
+      e.target.reset();
+      setTimeout(function() {
+        window.open(
+          'https://wa.me/2348165913697?text=Hi Mike, I found your portfolio and I need your services!',
+          '_blank'
+        );
+      }, 1000);
+    }
+
+    // ===== ACTIVE NAV LINK ON SCROLL =====
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', function() {
+      var current = '';
+      sections.forEach(function(s) {
+        if (window.scrollY >= s.offsetTop - 200) {
+          current = s.id;
+        }
+      });
+      navLinks.forEach(function(a) {
+        if (a.getAttribute('href') === '#' + current) {
+          a.style.color = '#C9A227';
+        } else {
+          a.style.color = '';
+        }
+      });
+    });
+
+    // ===== MOBILE MENU TOGGLE =====
+    const menuToggle = document.getElementById('menuToggle');
+    const closeMenu = document.getElementById('closeMenu');
+    const overlay = document.getElementById('mobileOverlay');
+
+    function openMenu() {
+      overlay.classList.add('open');
+    }
+
+    function closeMenuFn() {
+      overlay.classList.remove('open');
+    }
+
+    menuToggle.addEventListener('click', openMenu);
+    closeMenu.addEventListener('click', closeMenuFn);
+    // close on link click
+    overlay.querySelectorAll('.nav-links a').forEach(function(link) {
+      link.addEventListener('click', closeMenuFn);
+    });
+    // close on outside click (optional)
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closeMenuFn();
+    });
+  </script>
+
+</body>
+</html>
